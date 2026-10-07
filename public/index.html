@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuesEngine — HSC ও SSC প্রশ্নব্যাংক ও সমীকরণ ভিউয়ার</title>
+  <meta name="description" content="HSC ও SSC এর সকল বিষয়ের পূর্ণাঙ্গ প্রশ্নব্যাংক, বহুনির্বাচনি ও সৃজনশীল প্রশ্ন এবং গাণিতিক সমীকরণ রেন্ডারার">
+  
+  <!-- Google Fonts: Hind Siliguri for Bengali, Plus Jakarta Sans for English/UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- MathJax Configuration & Loader -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true,
+        packages: {'[+]': ['ams', 'newcommand', 'configmacros']}
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processHtmlClass: 'math-render'
+      },
+      loader: { load: ['[tex]/ams'] },
+      startup: {
+        pageReady: () => {
+          return MathJax.startup.defaultPageReady();
+        }
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">∑π</div>
+        <div class="logo-text">
+          <h1>QuesEngine</h1>
+          <span class="subtitle">প্রশ্নব্যাংক ও গাণিতিক সমীকরণ সমাধান প্ল্যাটফর্ম</span>
+        </div>
+      </div>
+      
+      <div class="header-stats" id="header-stats">
+        <span class="stat-pill"><strong id="stat-classes">৩</strong> শ্রেণি</span>
+        <span class="stat-pill"><strong id="stat-subjects">৬২</strong> বিষয়</span>
+        <span class="stat-pill"><strong id="stat-chapters">৫৪৫</strong> অধ্যায়</span>
+        <span class="stat-pill badge-primary">গাণিতিক সমীকরণ সমর্থিত</span>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-print" class="btn btn-secondary" title="প্রশ্নপত্র প্রিন্ট বা PDF সেভ করুন">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+          <span>প্রিন্ট / PDF</span>
+        </button>
+        <button id="btn-theme" class="btn btn-icon" title="ডার্ক / লাইট মোড টগল">
+          <span class="theme-icon-dark">🌙</span>
+          <span class="theme-icon-light">☀️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-main">
+    <!-- Filter Control Panel -->
+    <section class="filter-panel card">
+      <div class="panel-header">
+        <div class="panel-title-wrap">
+          <span class="step-num">১</span>
+          <h2>নির্বাচন করুন (Cascade Selector)</h2>
+        </div>
+        <div class="panel-hint">শ্রেণি ও বিষয় নির্বাচন করলেই সংশ্লিষ্ট অধ্যায় ও প্রশ্নাবলি স্বয়ংক্রিয়ভাবে লোড হবে</div>
+      </div>
+
+      <div class="cascading-grid">
+        <!-- Step 1: Class -->
+        <div class="form-group">
+          <label for="select-class">
+            <span class="label-badge">১</span> শ্রেণি (Class)
+          </label>
+          <div class="select-wrapper">
+            <select id="select-class">
+              <option value="" disabled selected>শ্রেণি বাছাই করুন...</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Step 2: Subject -->
+        <div class="form-group">
+          <label for="select-subject">
+            <span class="label-badge">২</span> বিষয় (Subject)
+          </label>
+          <div class="select-wrapper">
+            <select id="select-subject" disabled>
+              <option value="" disabled selected>প্রথমে শ্রেণি নির্বাচন করুন</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Step 3: Chapter -->
+        <div class="form-group">
+          <label for="select-chapter">
+            <span class="label-badge">৩</span> অধ্যায় (Chapter)
+          </label>
+          <div class="select-wrapper">
+            <select id="select-chapter" disabled>
+              <option value="" disabled selected>প্রথমে বিষয় নির্বাচন করুন</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Secondary Filter: Topic -->
+        <div class="form-group">
+          <label for="select-topic">
+            <span class="label-badge optional">ফিল্টার</span> টপিক (Topic)
+          </label>
+          <div class="select-wrapper">
+            <select id="select-topic" disabled>
+              <option value="all">সকল টপিক</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Secondary Filter: Question Type -->
+        <div class="form-group">
+          <label for="select-type">
+            <span class="label-badge optional">ফিল্টার</span> প্রশ্নের ধরন (Type)
+          </label>
+          <div class="select-wrapper">
+            <select id="select-type" disabled>
+              <option value="all">সকল ধরন</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Live Search -->
+        <div class="form-group search-group">
+          <label for="input-search">
+            <span class="label-badge optional">অনুসন্ধান</span> সার্চ (Search)
+          </label>
+          <div class="search-input-wrapper">
+            <input type="text" id="input-search" placeholder="প্রশ্ন বা অপশন খুঁজুন..." autocomplete="off">
+            <button id="btn-clear-search" class="clear-btn" title="মুছে ফেলুন" style="display:none;">&times;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toolbar & Mode Bar -->
+    <section class="toolbar card" id="toolbar" style="display:none;">
+      <div class="toolbar-left">
+        <div class="mode-toggles">
+          <button class="mode-btn active" data-mode="study" title="প্রশ্ন ও ব্যাখ্যা দেখুন">
+            📖 স্টাডি মোড
+          </button>
+          <button class="mode-btn" data-mode="practice" title="অপশনে ক্লিক করে নিজে যাচাই করুন">
+            🎯 প্র্যাকটিস / কুইজ মোড
+          </button>
+          <button class="mode-btn" data-mode="exam" title="শুধুমাত্র প্রশ্নপত্র দেখুন">
+            📝 প্রশ্নপত্র মোড
+          </button>
+        </div>
+
+        <div class="score-badge" id="practice-score-box" style="display:none;">
+          <span>স্কোর:</span>
+          <strong id="practice-score">০ / ০</strong>
+          <button id="btn-reset-quiz" class="btn-text">রিসেট</button>
+        </div>
+      </div>
+
+      <div class="toolbar-right">
+        <button id="btn-toggle-all-answers" class="btn btn-outline">
+          <span class="icon">👁️</span>
+          <span class="text">সকল উত্তর দেখান</span>
+        </button>
+
+        <div class="limit-selector">
+          <label for="select-limit">প্রতি পৃষ্ঠায়:</label>
+          <select id="select-limit">
+            <option value="20" selected>২০</option>
+            <option value="50">৫০</option>
+            <option value="100">১০০</option>
+            <option value="all">সবগুলো</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Status Bar -->
+    <div class="status-bar" id="status-bar" style="display:none;">
+      <div class="status-text">
+        <span id="current-chapter-title" class="chapter-highlight"></span>
+        <span class="badge" id="total-count-badge">০ টি প্রশ্ন</span>
+      </div>
+      <div class="pagination-info" id="pagination-info"></div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" id="loading-state" style="display:none;">
+      <div class="spinner"></div>
+      <p>প্রশ্নাবলি ও সমীকরণ লোড হচ্ছে...</p>
+    </div>
+
+    <!-- Empty / Initial State -->
+    <div class="empty-state card" id="empty-state">
+      <div class="empty-icon">📚</div>
+      <h3>কোনো অধ্যায় নির্বাচিত নেই</h3>
+      <p>উপরের ড্রপডাউন থেকে প্রথমে <strong>শ্রেণি</strong>, তারপর <strong>বিষয়</strong> এবং <strong>অধ্যায়</strong> নির্বাচন করুন। সমীকরণ ও চিত্রসহ প্রশ্নাবলি স্বয়ংক্রিয়ভাবে প্রদর্শিত হবে।</p>
+    </div>
+
+    <!-- Questions Container -->
+    <section class="questions-list math-render" id="questions-list"></section>
+
+    <!-- Pagination Footer -->
+    <div class="pagination-container" id="pagination-container" style="display:none;">
+      <button id="btn-prev-page" class="btn btn-outline" disabled>&laquo; পূর্ববর্তী</button>
+      <div class="page-pills" id="page-pills"></div>
+      <button id="btn-next-page" class="btn btn-outline" disabled>পরবর্তী &raquo;</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>QuesEngine &bull; উচ্চ মাধ্যমিক ও মাধ্যমিক স্তরের পূর্ণাঙ্গ প্রশ্নব্যাংক ও সমীকরণ সিস্টেম</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
